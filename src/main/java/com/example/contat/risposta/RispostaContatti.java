@@ -36,7 +36,6 @@ public class RispostaContatti implements Serializable {
 		this.listaContatti = listaContatti;
 	}
 	
-	
 	public RispostaContatti(ContattoDTO contatto) {
 		super();
 		this.contatto = contatto;
@@ -44,7 +43,9 @@ public class RispostaContatti implements Serializable {
 	
 	public RispostaContatti() {}
 	
-	
+	public ContattoDTO getContattoDTO(){
+		return this.contatto;
+	}
 	
 	
 }

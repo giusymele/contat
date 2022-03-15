@@ -10,11 +10,14 @@ import com.example.contat.dto.ContattoDTO;
 import com.example.contat.entity.Contatti;
 import com.example.contat.repository.ContatRepositoryextends;
 import com.example.contat.repository.UtentiRepository;
+import com.example.contat.request.RischiestaContatto;
 import com.example.contat.risposta.RispostaContatti;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import javax.security.auth.message.callback.PrivateKeyCallback.Request;
 
 @Service
 public class ContatService {
@@ -28,16 +31,22 @@ public class ContatService {
 //creare
 	public ResponseEntity<?> creaContat(ContattoDTO cont) {
 		
-		if(utentiRepository.findById(cont.getId()) != null) {
+		if(utentiRepository.findById(cont.getId()).isPresent()) {
 			
 			Contatti contattoEntity = new Contatti(cont.getId(), cont.getDescrizione());
 			
+			ContattoDTO contattoDTO = new ContattoDTO(contattoEntity.getId(),contattoEntity.getDescrizione());
+
+			// creo la risposta 
+
+			RispostaContatti rispostaContatti = new RispostaContatti(contattoDTO);
+
 			contRepository.save(contattoEntity);
 			
-			 return ResponseEntity //
+			 return ResponseEntity // 
 				        .status(HttpStatus.OK) //
 				        .header(HttpHeaders.CONTENT_TYPE) //
-				        .body("lista vuota");
+				        .body(rispostaContatti.getContattoDTO());
 		}
 		else {
 			 return ResponseEntity //
@@ -86,41 +95,24 @@ public class ContatService {
 					        .body(rispostaContatti);
 	}
 
-	// delete
-
-	public void deleteContat(Long id) {
-
-		contRepository.deleteById(id);
-	}
-
-	public void upDateContatto(Long id, Contatti cont) {
-		Contatti c = contRepository.getById(id);
-		c.setDescrizione(cont.getDescrizione());
-
-		contRepository.save(c);
-	}
-	
 	
 	
 	public ResponseEntity<?> getContatById(Long id){
 		
-		if(utentiRepository.findById(id) != null) {
+		if(id> 0 && utentiRepository.findById(id).isPresent()) {
 			//recupero il contatto e lo passo a oggetto di Contatti
 		Optional<Contatti> contattoEntity = contRepository.findById(id);
 
-			RispostaContatti rispostaContatti = new RispostaContatti();
-		
-			
 			Contatti c=	contattoEntity.get();
 				
 			ContattoDTO contatto=new ContattoDTO(c.getId(),c.getDescrizione());
 			//lo passo alla risposta
-			
+			RispostaContatti rispostaContatti = new RispostaContatti(contatto);
 			
 			 return ResponseEntity //
-			        .status(HttpStatus.INTERNAL_SERVER_ERROR) //
+			        .status(HttpStatus.OK) //
 			        .header(HttpHeaders.CONTENT_TYPE) //
-			        .body(contatto);
+			        .body(rispostaContatti);
 			
 	}	else {
 				 return ResponseEntity //
@@ -130,6 +122,56 @@ public class ContatService {
 			}
 		}
 		
+		public ResponseEntity<?> deletebyId(Long id){
+
+			ResponseEntity<?> esisteID = getContatById(id);
+			HttpStatus status =esisteID.getStatusCode();
+			if(status.is2xxSuccessful()){
+
+				contRepository.deleteById(id);
+
+				return ResponseEntity //
+				.status(HttpStatus.OK) //
+				.header(HttpHeaders.CONTENT_TYPE) //
+				.body("eliminato");
+
+			}
+			else
+			{					
+				return ResponseEntity //
+				.status(HttpStatus.INTERNAL_SERVER_ERROR) //
+				.header(HttpHeaders.CONTENT_TYPE) //
+				.body("eliminato");
+			}
+		}
+
 		
-	
+
+		public ResponseEntity<?> upDateById(ContattoDTO contattoDto){
+
+		if(utentiRepository.findById(contattoDto.getId()).isPresent()) {
+			
+			RispostaContatti rischiestaContatto= new RispostaContatti(contattoDto);
+
+			Contatti contattoModificato=new Contatti (contattoDto.getId() ,contattoDto.getDescrizione());
+
+			contRepository.save(contattoModificato);
+			return ResponseEntity //
+			.status(HttpStatus.OK) //
+			.header(HttpHeaders.CONTENT_TYPE) //
+			.body(rischiestaContatto);
+
+		}
+		else
+		{
+				
+			return ResponseEntity //
+			.status(HttpStatus.INTERNAL_SERVER_ERROR) //
+			.header(HttpHeaders.CONTENT_TYPE) //
+			.body("l'id non esiste");
+
+
+		}
+		
+	}
 }

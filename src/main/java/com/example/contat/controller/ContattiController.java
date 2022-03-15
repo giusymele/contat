@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,5 +69,16 @@ public class ContattiController {
 	{//recupero il contatto tramite id 
 		return contService.getContatById(id);
 	}	 
+
+	@DeleteMapping("/cancello/{id}")
+	public ResponseEntity<?> getContatByIdForDelete(@PathVariable Long id)
+	{//recupero il contatto tramite id 
+		return contService.deletebyId(id);
+	}	
 	
+	@PutMapping("/update/{id}")
+	public ResponseEntity<?> upDate(@RequestBody ContattoDTO contattoDto){
+	return contService.upDateById(contattoDto);
+	}
+
 }
