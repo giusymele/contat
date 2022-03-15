@@ -25,21 +25,24 @@ import lombok.NoArgsConstructor;
 @TableGenerator(name = "contatti")
 public class Contatti {
 
-	private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(nullable = false) long id;
+	private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(nullable = false) Long id;
 	private @Column(nullable = false) String descrizione;
+	private @Column(nullable = true) Long idUtente;
 
 	public Contatti() {}
 	
-	public Contatti(long id2, String descrizione2) {
+	public Contatti(Long id2, String descrizione2, Long idUtente) {
 		this.id = id2;
 		this.descrizione = descrizione2;
+		this.idUtente=idUtente;
+
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -51,4 +54,12 @@ public class Contatti {
 		this.descrizione = descrizione;
 	}
 
+	public void setIdUtente(Long idUtente) {
+		this.idUtente = idUtente;
+	}
+
+	public Long getIdUtente(){
+
+		return this.idUtente;
+	}
 }

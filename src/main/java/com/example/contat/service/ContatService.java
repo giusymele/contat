@@ -7,17 +7,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.contat.dto.ContattoDTO;
+import com.example.contat.dto.RispostaContatti;
 import com.example.contat.entity.Contatti;
 import com.example.contat.repository.ContatRepositoryextends;
 import com.example.contat.repository.UtentiRepository;
-import com.example.contat.request.RischiestaContatto;
-import com.example.contat.risposta.RispostaContatti;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.security.auth.message.callback.PrivateKeyCallback.Request;
 
 @Service
 public class ContatService {
@@ -31,30 +30,21 @@ public class ContatService {
 //creare
 	public ResponseEntity<?> creaContat(ContattoDTO cont) {
 		
-		if(utentiRepository.findById(cont.getId()).isPresent()) {
-			
-			Contatti contattoEntity = new Contatti(cont.getId(), cont.getDescrizione());
-			
-			ContattoDTO contattoDTO = new ContattoDTO(contattoEntity.getId(),contattoEntity.getDescrizione());
+		
+			Contatti contattoEntity = new Contatti();
 
-			// creo la risposta 
+			contattoEntity.setDescrizione(cont.getDescrizione());
+			contattoEntity.setIdUtente(cont.getIdUtente());
+		
 
-			RispostaContatti rispostaContatti = new RispostaContatti(contattoDTO);
-
-			contRepository.save(contattoEntity);
+			contattoEntity= contRepository.save(contattoEntity);
 			
+			cont.setId(contattoEntity.getId());
+
 			 return ResponseEntity // 
 				        .status(HttpStatus.OK) //
 				        .header(HttpHeaders.CONTENT_TYPE) //
-				        .body(rispostaContatti.getContattoDTO());
-		}
-		else {
-			 return ResponseEntity //
-				        .status(HttpStatus.INTERNAL_SERVER_ERROR) //
-				        .header(HttpHeaders.CONTENT_TYPE) //
-				        .body("utente non trovato");
-			
-		}
+				        .body(cont);
 	}
 
 	
@@ -70,7 +60,7 @@ public class ContatService {
 
 		for (Contatti item : listaContattiEntity) {
 
-			contatto = new ContattoDTO(item.getId(), item.getDescrizione());
+			contatto = new ContattoDTO(item.getId(), item.getDescrizione(), item.getIdUtente());
 
 			listaContattiDTO.add(contatto);
 
@@ -105,14 +95,12 @@ public class ContatService {
 
 			Contatti c=	contattoEntity.get();
 				
-			ContattoDTO contatto=new ContattoDTO(c.getId(),c.getDescrizione());
-			//lo passo alla risposta
-			RispostaContatti rispostaContatti = new RispostaContatti(contatto);
-			
+			ContattoDTO contatto=new ContattoDTO(c.getId(),c.getDescrizione(), c.getIdUtente());
+		
 			 return ResponseEntity //
 			        .status(HttpStatus.OK) //
 			        .header(HttpHeaders.CONTENT_TYPE) //
-			        .body(rispostaContatti);
+			        .body(contatto);
 			
 	}	else {
 				 return ResponseEntity //
@@ -149,29 +137,30 @@ public class ContatService {
 
 		public ResponseEntity<?> upDateById(ContattoDTO contattoDto){
 
-		if(utentiRepository.findById(contattoDto.getId()).isPresent()) {
-			
-			RispostaContatti rischiestaContatto= new RispostaContatti(contattoDto);
+			Contatti contattoModificato=null;
 
-			Contatti contattoModificato=new Contatti (contattoDto.getId() ,contattoDto.getDescrizione());
+				if(contRepository.findById(contattoDto.getId()).isPresent()) {
+					
+					contattoModificato=new Contatti (contattoDto.getId() ,contattoDto.getDescrizione(), contattoDto.getIdUtente());
 
-			contRepository.save(contattoModificato);
-			return ResponseEntity //
-			.status(HttpStatus.OK) //
-			.header(HttpHeaders.CONTENT_TYPE) //
-			.body(rischiestaContatto);
-
-		}
-		else
-		{
+					contattoModificato =contRepository.save(contattoModificato);
 				
-			return ResponseEntity //
-			.status(HttpStatus.INTERNAL_SERVER_ERROR) //
-			.header(HttpHeaders.CONTENT_TYPE) //
-			.body("l'id non esiste");
-
-
-		}
+				}
+				else
+				{
+			
+				    contattoModificato = new Contatti();
+					contattoModificato.setDescrizione(contattoDto.getDescrizione());
+					contattoModificato.setIdUtente(contattoDto.getIdUtente());			
+			
+			
+				contattoModificato = contRepository.save(contattoModificato);
+			
+				}
 		
+				return ResponseEntity //
+				.status(HttpStatus.OK) //
+				.header(HttpHeaders.CONTENT_TYPE) //
+				.body(contattoModificato);
 	}
 }

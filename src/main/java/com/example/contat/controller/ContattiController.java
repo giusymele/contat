@@ -65,11 +65,20 @@ public class ContattiController {
 	}	 
 	  
 	@GetMapping("/contat/{id}")
-	public ResponseEntity<?> getContatById(@PathVariable Long id)
-	{//recupero il contatto tramite id 
-		return contService.getContatById(id);
-	}	 
-
+	public ResponseEntity<?> getContatById(@PathVariable Long id){
+		try{//recupero il contatto tramite id 
+			
+			return contService.getContatById(id);
+		}
+		catch(Exception e){ 
+				
+			return ResponseEntity //
+			.status(HttpStatus.INTERNAL_SERVER_ERROR) //
+			.header(HttpHeaders.CONTENT_TYPE) //
+			.body(e.getMessage() + "  -----   " +  e.getStackTrace());
+			
+		}	 
+	}
 	@DeleteMapping("/cancello/{id}")
 	public ResponseEntity<?> getContatByIdForDelete(@PathVariable Long id)
 	{//recupero il contatto tramite id 
@@ -78,7 +87,18 @@ public class ContattiController {
 	
 	@PutMapping("/update/{id}")
 	public ResponseEntity<?> upDate(@RequestBody ContattoDTO contattoDto){
-	return contService.upDateById(contattoDto);
+
+		try{
+		return contService.upDateById(contattoDto);
+		}
+		catch(Exception e){ 
+			
+			return ResponseEntity //
+			.status(HttpStatus.INTERNAL_SERVER_ERROR) //
+			.header(HttpHeaders.CONTENT_TYPE) //
+			.body(e.getMessage() + "  -----   " +  e.getStackTrace());
+			
+		}
 	}
 
 }

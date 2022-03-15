@@ -1,11 +1,9 @@
-package com.example.contat.risposta;
+package com.example.contat.dto;
 
 import java.io.Serializable;
 import java.util.List;
 
 import javax.json.bind.annotation.JsonbProperty;
-
-import com.example.contat.dto.ContattoDTO;
 
 
 
@@ -20,8 +18,7 @@ public class RispostaContatti implements Serializable {
 	@JsonbProperty("listaContatti")
 	List<ContattoDTO> listaContatti;
 	
-	@JsonbProperty("contatto")
-	ContattoDTO contatto;
+
 
 	public List<ContattoDTO> getListaContatti() {
 		return listaContatti;
@@ -36,16 +33,9 @@ public class RispostaContatti implements Serializable {
 		this.listaContatti = listaContatti;
 	}
 	
-	public RispostaContatti(ContattoDTO contatto) {
-		super();
-		this.contatto = contatto;
-	}
 	
 	public RispostaContatti() {}
-	
-	public ContattoDTO getContattoDTO(){
-		return this.contatto;
-	}
+
 	
 	
 }

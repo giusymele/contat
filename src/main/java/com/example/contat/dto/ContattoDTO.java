@@ -17,10 +17,17 @@ public class ContattoDTO implements Serializable{
 	@JsonbProperty("descrizione")
 	private String descrizione;
 
-	public ContattoDTO(long id, String descrizione) {
+
+	@JsonbProperty("idUtente")
+	private long idUtente;
+
+
+	public ContattoDTO(long id, String descrizione, long idUtente) {
+
 		super();
 		this.id = id;
 		this.descrizione = descrizione;
+		this.idUtente=idUtente;
 	}
 
 	public ContattoDTO() {}
@@ -38,6 +45,10 @@ public class ContattoDTO implements Serializable{
 
 	public void setDescrizione(String descrizione) {
 		this.descrizione = descrizione;
+	}
+
+	public long getIdUtente() {
+		return this.idUtente;
 	}
 
 }
