@@ -101,4 +101,23 @@ public class ContattiController {
 		}
 	}
 
+
+	@PostMapping("/allcontatpdf")
+	public ResponseEntity<?> getAllPdf(@RequestBody String titolo){
+
+		try{//recupero il contatto tramite id 
+			
+			return contService.getAllContatPdf(titolo);
+		}
+		catch(Exception e){ 
+				
+			return ResponseEntity //
+			.status(HttpStatus.INTERNAL_SERVER_ERROR) //
+			.header(HttpHeaders.CONTENT_TYPE) //
+			.body(e.getMessage() + "  -----   " +  e.getStackTrace());
+			
+		}	 
+		
+	}
+
 }

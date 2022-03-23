@@ -30,24 +30,7 @@ public class ContatApplication {
 
 	}
 
-	//@Override
-//	public void run(String... args) throws Exception {
-//
-//		String query = "INSERT INTO UTENTI(EMAIL, PASSWORD) VALUES('UTENTE@UTENTE.IT','CIAO')";
-//	
-//	
-//	int result=	jdbcTemplate.update(query);
-//	
-//	if(result>0) {
-//		
-//		System.out.print("nuovo utente inserito ");
-//	}
-//	else {
-//	
-//		System.out.print("utente non inserito ");
-//	}
 	
-		
 	
 	
 
